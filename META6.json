@@ -1,0 +1,20 @@
+{
+  "meta-version": "0",
+  "name": "K8sRegex",
+  "version": "0.0.0",
+  "auth": "github:littlebenlittle",
+  "api": "0.0",
+  "description": "Useful regexes for interacting with kubernetes",
+  "source-url": "git://github.com/littlebenlittle/raku-k8s-regex",
+  "perl": "6.*",
+  "author": "Ben Little <ben.little@fruition.net>",
+  "tags": [
+    "kubernetes",
+    "regex",
+    "k8s"
+  ],
+  "license": "Artistic-2.0",
+  "provides": {
+    "K8sRegex": "lib/K8sRegex.rakumod"
+  }
+}
