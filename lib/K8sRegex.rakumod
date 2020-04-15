@@ -1,18 +1,41 @@
 
 unit module K8sRegex;
 
-# Example:
-#   cmd='use K8sRegex; slurp() ~~ &pod; say "pod/" ~ $/<name>.Str'
-#   kubectl get pods | raku -e $cmd
-my regex pod is export {
-    $<kind>=( [<.alpha>+]+ % "." )
-    "/"
-    $<name>=( <.alnum>+ )
-    "-"
-    $<tail>=( [<.xdigit>+ "-" <.alnum>+] )
+our token kind is export { [<.alpha>+]+ % "." }
+our token name is export { <.alnum>+ }
+our token tail is export { [<.xdigit>+ "-" <.alnum>+] }
+our token pod  is export { <kind> "/" <name> "-" <tail> }
+
+class act {
+    method TOP ($/) {
+        note $/;
+        my %obj = %(
+            kind => $/<kind>.made,
+            name => $/<name>.made,
+            tail => $/<tail>.made,
+        );
+        make %obj;
+    }
+    method kind ($/) {
+        my $kind = $/.Str;
+        make $kind;
+    }
+    method name ($/) {
+        my $name = $/.Str;
+        make $name;
+    }
+    method tail ($/) {
+        my $tail = $/.Str;
+        make $tail;
+    }
 }
 
-our sub get-pods (Str:D $s) is export {
-   $s.lines.map(*~~/$<pod>=<&pod>/).grep(*!~~Nil)
+our sub query-pod ($s, $attr, $match) is export {
+    race for $s.lines.grep(* ~~ / <pod> /).map(* ~~ / <pod> /) -> $m {
+        if $m<pod>{$attr} ~~ $match {
+            say $m<pod>.Str;
+        }
+    }
 }
+
 
